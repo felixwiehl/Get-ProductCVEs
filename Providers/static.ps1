@@ -1,6 +1,6 @@
 [PSCustomObject]@{
-    Vendor  = "progress_software"
-    Product = "ws_ftp_server"
+    Vendor  = ""
+    Product = ""
     
     GetVersion = {
         param(
@@ -11,9 +11,9 @@
         if ($Params.ContainsKey("Version")) {
             $StaticVersion = $Params["Version"]
             
-            return ($StaticVersion -replace '^v', '').Trim()
+            return $StaticVersion.Trim()
         }
 
-        throw "Static version not provided. Please add 'Version=X.X.X' to your ProviderParams."
+        throw "Static version not provided. Please add '{""Version"": ""X.X.X""}' to your ProviderParams."
     }
 }

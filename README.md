@@ -51,7 +51,7 @@ When this sensor runs, the Provider module defines the Vendor, Product and fetch
 
 **Example for GitLab:**
 ```text
--Provider "gitlab" -Target "%host" -NvdApiKey "YOUR_API_KEY" -ProviderParams "Token=glpat-12345"
+-Provider "gitlab" -Target "%host" -NvdApiKey "YOUR_API_KEY" -ProviderParams '{"Token": "glpat-12345"}'
 ```
 
 ### Parameter Reference
