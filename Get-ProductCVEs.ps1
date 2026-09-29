@@ -15,6 +15,8 @@ param (
     [string]$Target = "",                     # Optional: Passed to provider; not necessary for static
     [string]$Vendor = "",                     # Optional: Overrides provider default vendor
     [string]$Product = "",                    # Optional: Overrides provider default product
+    [string]$Type = "a",
+    [string]$Version = "2.3",
     [string]$NvdApiKey = "",                  # Optional: NVD API key for higher rate limits
     [string]$ProviderParams = "",             # Optional: String of custom args (tokens, custom ports, etc.)
     [switch]$IgnoreSsl
@@ -96,22 +98,23 @@ try {
         throw "Vendor and Product must be defined either in the provider or via script parameters."
     }
 
-    $ParsedParams = @{}
+   $ParsedParams = @{}
     if (-not [string]::IsNullOrWhiteSpace($ProviderParams)) {
-        $ProviderParams -split '[,;]' | ForEach-Object {
-            if ($_ -match '^\s*(?<key>[^=]+)=(?<val>.*)\s*$') {
-                $ParsedParams[$Matches.key.Trim()] = $Matches.val.Trim()
-            }
+        # Convert from JSON and cast the custom object to a Hashtable
+        $jsonObject = $ProviderParams | ConvertFrom-Json
+        $jsonObject.psobject.properties | ForEach-Object {
+            $ParsedParams[$_.Name] = $_.Value
         }
     }
 
     $CurrentVersion = & $Plugin.GetVersion $Target $ParsedParams
+    Write-Host $CurrentVersion
 
     if ([string]::IsNullOrWhiteSpace($CurrentVersion)) {
         throw "Retrieved version from provider [$Provider] was empty."
     }
 
-    $CpeString = "cpe:2.3:a:${ResolvedVendor}:${ResolvedProduct}:${CurrentVersion}:*:*:*:*:*:*:*"
+    $CpeString = "cpe:${Version}:${Type}:${ResolvedVendor}:${ResolvedProduct}:${CurrentVersion}:*:*:*:*:*:*:*"
     $NvdUrl = "https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=$CpeString&isVulnerable"
 
     $Headers = @{}

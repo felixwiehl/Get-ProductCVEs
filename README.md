@@ -18,6 +18,7 @@ It uses a plugin-based architecture, allowing you to query different products us
    ├── Get-ProductCVEs.ps1
    └── Providers\
        ├── gitlab.ps1
+       ├── snmpv2.ps1
        ├── static.ps1
        └── <custom_provider.ps1>
    ```
@@ -59,7 +60,9 @@ When this sensor runs, the Provider module defines the Vendor, Product and fetch
 | `-Provider` | The name of the `.ps1` file in the Providers folder (e.g., `gitlab`). |
 | `-Target` | The IP or DNS name of the target server. Usually passed by PRTG as `%host`. |
 | `-NvdApiKey` | (Optional but recommended) Your NIST API Key. Prevents rate-limiting (HTTP 403) from NVD. Get one for free at `nvd.nist.gov`. |
-| `-ProviderParams` | A comma-separated `Key=Value` string passed directly to the provider (e.g., `Token=xyz,Port=8443`). Use PRTG placeholders for secrets like API tokens! |
+| `-Version` | The version of the CPE definition (default is `2.3`). |
+| `-Type` | Part/Type used in the CPE string (default is `a`, other valid values may be `o` or `h`). |
+| `-ProviderParams` | JSON string passed directly to the provider (e.g., `'{"community": "public", "oid": "1.3.6.1.2.1.1.1.0", "regex": ", revision WC.([^,]+)"}'`). Use PRTG placeholders for secrets like API tokens. |
 ---
 
 ## Provider Modules
@@ -69,7 +72,7 @@ Dynamic providers contain logic to actively connect to the target software to fe
 
 **Example**
 ```powershell
--Provider "gitlab" -Target "%host" -ProviderParams "Token=%scriptplaceholder1"
+-Provider "gitlab" -Target "%host" -ProviderParams '{"Token": "%scriptplaceholder1"}'
 ```
 
 ### 2. The `static.ps1` Provider
