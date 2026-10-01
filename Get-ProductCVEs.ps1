@@ -108,7 +108,6 @@ try {
     }
 
     $CurrentVersion = & $Plugin.GetVersion $Target $ParsedParams
-    Write-Host $CurrentVersion
 
     if ([string]::IsNullOrWhiteSpace($CurrentVersion)) {
         throw "Retrieved version from provider [$Provider] was empty."

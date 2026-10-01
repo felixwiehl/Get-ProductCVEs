@@ -30,7 +30,6 @@
 
             if ($Regex -and $data) {
                 if ($data -match $Regex) {
-                    Write-host $matches
                     if ($matches.Count -gt 1) {
                         return $matches[1]
                     } else {
